@@ -56,25 +56,3 @@ def handler(request):
 
 handler.__name__ = "handler"
 
-# Optional: Local testing block
-if __name__ == "__main__":
-    test_request_single = {
-        "queryStringParameters": {
-            "name": "fiEZC"
-        }
-    }
-
-    test_request_multiple = {
-        "queryStringParameters": {
-            "name": ["49J1u6KA8", "fiEZC"]
-        }
-    }
-
-    print("\nTest single name response:")
-    print(handler(test_request_single))
-
-    print("\nTest multiple names response:")
-    print(handler(test_request_multiple))
-
-    print("\nTest no name parameter response:")
-    print(handler({"queryStringParameters": {}}))
