@@ -1,29 +1,32 @@
 import json
-import os
 
 def handler(request):
-    query = request.query_params
-    names = query.getlist("name")
+    # Load data
+    with open("q-vercel-python.json", "r") as f:
+        data = json.load(f)
+    
+    # Get list of names from query params
+    names = request.get("queryStringParameters", {}).get("name")
 
-    try:
-        json_path = os.path.join(os.path.dirname(__file__), "q-vercel-python.json")
-        with open(json_path, "r") as f:
-            students = json.load(f)
-    except FileNotFoundError:
+    if not names:
         return {
-            "statusCode": 500,
-            "headers": { "Content-Type": "application/json" },
-            "body": json.dumps({ "error": "Data file not found." })
+            "statusCode": 400,
+            "body": json.dumps({ "error": "No name parameters provided" }),
+            "headers": { "Content-Type": "application/json" }
         }
 
-    marks_dict = {student["name"]: student["marks"] for student in students}
-    result = [marks_dict.get(name, None) for name in names]
+    # If only one name, convert to list
+    if isinstance(names, str):
+        names = [names]
+
+    # Get marks in order
+    marks = [data.get(name, 0) for name in names]
 
     return {
         "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        },
-        "body": json.dumps({ "marks": result })
+        "body": json.dumps({ "marks": marks }),
+        "headers": { "Content-Type": "application/json" }
     }
+
+# Vercel requires this name
+handler.__name__ = "handler"
