@@ -7,7 +7,7 @@ def handler(request):
 
     try:
         # Load data
-        with open("q-vercel-python.json", "r") as f:
+        with open("api/q-vercel-python.json", "r") as f:
             students = json.load(f)
     except FileNotFoundError:
         return {
