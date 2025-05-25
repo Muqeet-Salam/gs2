@@ -4,7 +4,7 @@ import os
 def handler(request):
     print("Received request:", request)
 
-    # Adjust the path if needed; assuming JSON is in the same folder
+    # Load data file path (adjust if needed)
     json_path = os.path.join(os.path.dirname(__file__), "q-vercel-python.json")
 
     # Load data as list of dicts
@@ -25,7 +25,10 @@ def handler(request):
         return {
             "statusCode": 400,
             "body": json.dumps({"error": "No name parameters provided"}),
-            "headers": {"Content-Type": "application/json"}
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            }
         }
 
     # If only one name, convert to list
@@ -43,9 +46,35 @@ def handler(request):
     print("Final marks list:", marks)
 
     return {
-    "statusCode": 200,
-    "body": json.dumps({ "marks": marks }),
-    "headers": { "Content-Type": "application/json" }
-}
+        "statusCode": 200,
+        "body": json.dumps({"marks": marks}),
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        }
+    }
 
 handler.__name__ = "handler"
+
+# Optional: Local testing block
+if __name__ == "__main__":
+    test_request_single = {
+        "queryStringParameters": {
+            "name": "fiEZC"
+        }
+    }
+
+    test_request_multiple = {
+        "queryStringParameters": {
+            "name": ["49J1u6KA8", "fiEZC"]
+        }
+    }
+
+    print("\nTest single name response:")
+    print(handler(test_request_single))
+
+    print("\nTest multiple names response:")
+    print(handler(test_request_multiple))
+
+    print("\nTest no name parameter response:")
+    print(handler({"queryStringParameters": {}}))
