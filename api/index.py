@@ -1,10 +1,14 @@
 import json
+import os
 
 def handler(request):
     print("Received request:", request)
 
+    # Adjust the path if needed; assuming JSON is in the same folder
+    json_path = os.path.join(os.path.dirname(__file__), "q-vercel-python.json")
+
     # Load data as list of dicts
-    with open("q-vercel-python.json", "r") as f:
+    with open(json_path, "r") as f:
         data_list = json.load(f)
     print("Loaded data list:", data_list)
 
@@ -20,8 +24,8 @@ def handler(request):
         print("No name parameters provided in the request.")
         return {
             "statusCode": 400,
-            "body": json.dumps({ "error": "No name parameters provided" }),
-            "headers": { "Content-Type": "application/json" }
+            "body": json.dumps({"error": "No name parameters provided"}),
+            "headers": {"Content-Type": "application/json"}
         }
 
     # If only one name, convert to list
@@ -40,6 +44,8 @@ def handler(request):
 
     return {
         "statusCode": 200,
-        "body": json.dumps({ "marks": marks }),
-        "headers": { "Content-Type": "application/json" }
+        "body": json.dumps({"marks": marks}),
+        "headers": {"Content-Type": "application/json"}
     }
+
+handler.__name__ = "handler"
