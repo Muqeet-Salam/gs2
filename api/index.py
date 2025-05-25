@@ -16,11 +16,11 @@ def handler(request):
     data = {entry["name"]: entry["marks"] for entry in data_list}
     print("Converted data dict:", data)
 
-    # Get list of names from query params
-    names = request.get("queryStringParameters", {}).get("name")
-    print("Query parameter 'name':", names)
+    # Get 'name' parameter from query string
+    names_param = request.get("queryStringParameters", {}).get("name")
+    print("Query parameter 'name':", names_param)
 
-    if not names:
+    if not names_param:
         print("No name parameters provided in the request.")
         return {
             "statusCode": 400,
@@ -31,12 +31,15 @@ def handler(request):
             }
         }
 
-    # If only one name, convert to list
-    if isinstance(names, str):
-        names = [names]
+    # If multiple names passed as comma-separated string, split them
+    if isinstance(names_param, str):
+        names = [name.strip() for name in names_param.split(",")]
+    else:
+        names = []
+
     print("Processed names list:", names)
 
-    # Get marks in order
+    # Lookup marks for each name; default 0 if not found
     marks = []
     for name in names:
         mark = data.get(name, 0)
@@ -55,4 +58,3 @@ def handler(request):
     }
 
 handler.__name__ = "handler"
-
