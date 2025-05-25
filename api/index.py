@@ -43,9 +43,9 @@ def handler(request):
     print("Final marks list:", marks)
 
     return {
-        "statusCode": 200,
-        "body": json.dumps({"marks": marks}),
-        "headers": {"Content-Type": "application/json"}
-    }
+    "statusCode": 200,
+    "body": json.dumps({ "marks": marks }),
+    "headers": { "Content-Type": "application/json" }
+}
 
 handler.__name__ = "handler"
